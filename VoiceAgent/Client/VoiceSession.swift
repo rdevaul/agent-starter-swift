@@ -16,13 +16,23 @@ final class VoiceSession: ObservableObject {
     @Published var state: State = .idle
     @Published var transcript: String = ""
     @Published var error: String?
+    @Published var audioLevel: Float = 0.0
 
+    let audioEngine = AudioEngineManager()
+    
     private let client: VoiceAPIClient
-    private let audioEngine = AudioEngineManager()
     private var cancellables = Set<AnyCancellable>()
 
     init() {
         self.client = VoiceAPIClient()
+        
+        // Mirror audioEngine level into session
+        audioEngine.$audioLevel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] level in
+                self?.audioLevel = level
+            }
+            .store(in: &cancellables)
 
         client.setEventHandler { [weak self] event in
             DispatchQueue.main.async {
@@ -38,7 +48,7 @@ final class VoiceSession: ObservableObject {
             return
         }
         do {
-            try audioEngine.setup()
+            try await audioEngine.setup()
         } catch {
             self.error = "Audio setup failed: \(error.localizedDescription)"
             state = .error("Audio setup failed: \(error.localizedDescription)")
