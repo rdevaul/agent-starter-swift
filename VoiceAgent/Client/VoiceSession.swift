@@ -19,7 +19,7 @@ final class VoiceSession: ObservableObject {
     @Published var audioLevel: Float = 0.0
 
     let audioEngine = AudioEngineManager()
-
+    
     private let client: VoiceAPIClient
     private var cancellables = Set<AnyCancellable>()
 
