@@ -54,6 +54,32 @@ final class VoiceAPIClient: ObservableObject {
         eventHandler?(.disconnected)
     }
 
+    func sendAudio(_ data: Data) {
+        webSocketTask?.send(.data(data)) { error in
+            if let error = error {
+                self.eventHandler?(.error("Audio send failed: \(error.localizedDescription)"))
+            }
+        }
+    }
+
+    func startRecording() {
+        sendControlMessage(["type": "start_recording"])
+    }
+
+    func stopRecording() {
+        sendControlMessage(["type": "stop_recording"])
+    }
+
+    private func sendControlMessage(_ message: [String: Any]) {
+        guard let data = try? JSONSerialization.data(withJSONObject: message),
+              let string = String(data: data, encoding: .utf8) else { return }
+        webSocketTask?.send(.string(string)) { error in
+            if let error = error {
+                self.eventHandler?(.error("Send failed: \(error.localizedDescription)"))
+            }
+        }
+    }
+
     private func receiveMessages() {
         webSocketTask?.receive { [weak self] result in
             guard let self = self else { return }

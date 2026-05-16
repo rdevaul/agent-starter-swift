@@ -2,7 +2,7 @@ import SwiftUI
 
 @main
 struct VoiceAgentApp: App {
-    private let session = VoiceSession()
+    @StateObject private var session = VoiceSession()
     private let serverURL = "wss://voice-api.rich.dev:8444/ws/voice"
 
     var body: some Scene {

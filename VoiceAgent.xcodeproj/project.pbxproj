@@ -42,18 +42,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		ACAEBA662DE6EE970072E93E /* Exceptions for "BroadcastExtension" folder in "BroadcastExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = ACAEBA572DE6EE970072E93E /* BroadcastExtension */;
-		};
 		B577A91F2D15FDB800B59A0B /* Exceptions for "VoiceAgent" folder in "VoiceAgent" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				.env.example.xcconfig,
-				.env.xcconfig,
 				Info.plist,
 				VoiceAgent.xcconfig,
 			);
@@ -64,9 +56,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		ACAEBA5C2DE6EE970072E93E /* BroadcastExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				ACAEBA662DE6EE970072E93E /* Exceptions for "BroadcastExtension" folder in "BroadcastExtension" target */,
-			);
 			path = BroadcastExtension;
 			sourceTree = "<group>";
 		};
@@ -462,6 +451,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"VoiceAgent/Preview Content\"";
+				DEVELOPMENT_TEAM = 2KJX3RS2KT;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
@@ -514,6 +504,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"VoiceAgent/Preview Content\"";
+				DEVELOPMENT_TEAM = 2KJX3RS2KT;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
@@ -586,8 +577,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-
 	};
 	rootObject = B5B5E3AA2D124AE00099C9BE /* Project object */;
 }
