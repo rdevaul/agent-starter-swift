@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A view that shows an error snackbar.
 struct ErrorView: View {
-    let error: Error
+    let error: String
     let onDismiss: () -> Void
 
     var body: some View {
@@ -20,7 +20,7 @@ struct ErrorView: View {
             }
             .font(.system(size: 15, weight: .semibold))
 
-            Text(error.localizedDescription)
+            Text(error)
                 .font(.system(size: 15))
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -37,8 +37,5 @@ struct ErrorView: View {
 }
 
 #Preview {
-    ErrorView(
-        error: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Sample error message"]),
-        onDismiss: {}
-    )
+    ErrorView(error: "Sample error message", onDismiss: {})
 }
