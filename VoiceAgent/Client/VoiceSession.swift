@@ -19,19 +19,16 @@ final class VoiceSession: ObservableObject {
     @Published var audioLevel: Float = 0.0
 
     let audioEngine = AudioEngineManager()
-    
+
     private let client: VoiceAPIClient
     private var cancellables = Set<AnyCancellable>()
 
     init() {
         self.client = VoiceAPIClient()
 
-        // Mirror audioEngine level into session
         audioEngine.$audioLevel
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] level in
-                self?.audioLevel = level
-            }
+            .assign(to: \.audioLevel, on: self)
             .store(in: &cancellables)
 
         client.setEventHandler { [weak self] event in
