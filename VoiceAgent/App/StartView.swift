@@ -1,16 +1,16 @@
-import LiveKitComponents
 import SwiftUI
 
 /// The initial view that is shown when the app is not connected to the server.
 struct StartView: View {
-    @EnvironmentObject private var session: Session
+    @EnvironmentObject private var session: VoiceSession
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Namespace private var button
+    @State private var serverURL: String = ""
 
     var body: some View {
         VStack(spacing: 8 * .grid) {
-            bars()
+            titleSection()
+            urlField()
             connectButton()
         }
         .padding(.horizontal, horizontalSizeClass == .regular ? 32 * .grid : 16 * .grid)
@@ -22,6 +22,15 @@ struct StartView: View {
         #endif
     }
 
+    private func titleSection() -> some View {
+        VStack(spacing: 4 * .grid) {
+            bars()
+            Text("Voice Assistant")
+                .font(.system(size: 24, weight: .bold))
+                .foregroundStyle(.fg0)
+        }
+    }
+
     private func bars() -> some View {
         HStack(spacing: .grid) {
             let bars = [2, 8, 12, 8, 2].map { $0 * .grid }
@@ -31,6 +40,16 @@ struct StartView: View {
                     .frame(width: 2 * .grid, height: bars[index])
             }
         }
+    }
+
+    private func urlField() -> some View {
+        TextField("Server URL", text: $serverURL)
+            .textFieldStyle(.plain)
+            .foregroundStyle(.fg1)
+            .padding(2 * .grid)
+            .background(.bg2)
+            .clipShape(RoundedRectangle(cornerRadius: .cornerRadiusSmall))
+            .frame(maxWidth: horizontalSizeClass == .regular ? 80 * .grid : .infinity)
     }
 
     private func tip() -> some View {
@@ -50,33 +69,20 @@ struct StartView: View {
 
     @ViewBuilder
     private func connectButton() -> some View {
-        AsyncButton {
-            await session.start()
+        Button {
+            Task {
+                await session.connect(to: serverURL)
+            }
         } label: {
             HStack {
                 Spacer()
                 Text("connect.start")
-                    .matchedGeometryEffect(id: "connect", in: button)
-                Spacer()
-            }
-            .frame(width: 58 * .grid, height: 11 * .grid)
-        } busyLabel: {
-            HStack(spacing: 4 * .grid) {
-                Spacer()
-                Spinner()
-                    .transition(.scale.combined(with: .opacity))
-                Text("connect.connecting")
-                    .matchedGeometryEffect(id: "connect", in: button)
                 Spacer()
             }
             .frame(width: 58 * .grid, height: 11 * .grid)
         }
-        #if os(visionOS)
-        .buttonStyle(.borderedProminent)
-        .controlSize(.extraLarge)
-        #else
         .buttonStyle(ProminentButtonStyle())
-        #endif
+        .disabled(serverURL.isEmpty)
     }
 }
 

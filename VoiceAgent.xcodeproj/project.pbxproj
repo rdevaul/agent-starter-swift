@@ -9,9 +9,6 @@
 /* Begin PBXBuildFile section */
 		ACAEBA5B2DE6EE970072E93E /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACAEBA5A2DE6EE970072E93E /* ReplayKit.framework */; };
 		ACAEBA622DE6EE970072E93E /* BroadcastExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = ACAEBA582DE6EE970072E93E /* BroadcastExtension.appex */; platformFilters = (ios, xros, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		ACAEBA692DE6EF4B0072E93E /* LiveKit in Frameworks */ = {isa = PBXBuildFile; productRef = ACAEBA682DE6EF4B0072E93E /* LiveKit */; };
-		B5E1B90F2D14E9EC00A38CB6 /* LiveKitComponents in Frameworks */ = {isa = PBXBuildFile; productRef = B5E1B90E2D14E9EC00A38CB6 /* LiveKitComponents */; };
-		B5E1B9122D14E9F500A38CB6 /* LiveKit in Frameworks */ = {isa = PBXBuildFile; productRef = B5E1B9112D14E9F500A38CB6 /* LiveKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,7 +86,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				ACAEBA5B2DE6EE970072E93E /* ReplayKit.framework in Frameworks */,
-				ACAEBA692DE6EF4B0072E93E /* LiveKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,8 +93,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5E1B90F2D14E9EC00A38CB6 /* LiveKitComponents in Frameworks */,
-				B5E1B9122D14E9F500A38CB6 /* LiveKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,7 +146,6 @@
 			);
 			name = BroadcastExtension;
 			packageProductDependencies = (
-				ACAEBA682DE6EF4B0072E93E /* LiveKit */,
 			);
 			productName = BroadcastExtension;
 			productReference = ACAEBA582DE6EE970072E93E /* BroadcastExtension.appex */;
@@ -176,10 +169,6 @@
 				B5B5E3B42D124AE00099C9BE /* VoiceAgent */,
 			);
 			name = VoiceAgent;
-			packageProductDependencies = (
-				B5E1B90E2D14E9EC00A38CB6 /* LiveKitComponents */,
-				B5E1B9112D14E9F500A38CB6 /* LiveKit */,
-			);
 			productName = VoiceAgent;
 			productReference = B5B5E3B22D124AE00099C9BE /* VoiceAgent.app */;
 			productType = "com.apple.product-type.application";
@@ -211,10 +200,6 @@
 			);
 			mainGroup = B5B5E3A92D124AE00099C9BE;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				B5E1B90D2D14E9EC00A38CB6 /* XCRemoteSwiftPackageReference "components-swift" */,
-				B5E1B9102D14E9F500A38CB6 /* XCRemoteSwiftPackageReference "client-sdk-swift" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B5B5E3B32D124AE00099C9BE /* Products */;
 			projectDirPath = "";
@@ -290,7 +275,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.livekit.example.VoiceAssistant.broadcast;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devaul.VoiceAgent.broadcast;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -322,7 +307,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.livekit.example.VoiceAssistant.broadcast;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devaul.VoiceAgent.broadcast;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -487,7 +472,7 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = VoiceAgent/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "LiveKit Agent";
+				INFOPLIST_KEY_CFBundleDisplayName = "Voice Agent";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "VoiceAgent uses your camera";
@@ -507,7 +492,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.livekit.example.VoiceAssistant;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devaul.VoiceAgent;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -539,7 +524,7 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = VoiceAgent/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "LiveKit Agent";
+				INFOPLIST_KEY_CFBundleDisplayName = "Voice Agent";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "VoiceAgent uses your camera";
@@ -559,7 +544,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.livekit.example.VoiceAssistant;
+				PRODUCT_BUNDLE_IDENTIFIER = com.devaul.VoiceAgent;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -602,41 +587,7 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		B5E1B90D2D14E9EC00A38CB6 /* XCRemoteSwiftPackageReference "components-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/livekit/components-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.7;
-			};
-		};
-		B5E1B9102D14E9F500A38CB6 /* XCRemoteSwiftPackageReference "client-sdk-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/livekit/client-sdk-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.14.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 
-/* Begin XCSwiftPackageProductDependency section */
-		ACAEBA682DE6EF4B0072E93E /* LiveKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LiveKit;
-		};
-		B5E1B90E2D14E9EC00A38CB6 /* LiveKitComponents */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B5E1B90D2D14E9EC00A38CB6 /* XCRemoteSwiftPackageReference "components-swift" */;
-			productName = LiveKitComponents;
-		};
-		B5E1B9112D14E9F500A38CB6 /* LiveKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B5E1B9102D14E9F500A38CB6 /* XCRemoteSwiftPackageReference "client-sdk-swift" */;
-			productName = LiveKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B5B5E3AA2D124AE00099C9BE /* Project object */;
 }
