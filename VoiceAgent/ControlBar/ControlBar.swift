@@ -23,7 +23,7 @@ struct ControlBar: View {
                 backgroundColor: .bg2,
                 borderColor: .separator1
             )
-        }
+        )
         .font(.system(size: 17, weight: .medium))
         .frame(height: 15 * .grid)
         #if !os(visionOS)
