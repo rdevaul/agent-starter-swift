@@ -22,12 +22,13 @@ final class VoiceAPIClient: ObservableObject {
 
     private var webSocketTask: URLSessionWebSocketTask?
     private let urlSession: URLSession
+    private let callbackQueue = DispatchQueue(label: "com.glados.voice.callback")
     private var eventHandler: ((Event) -> Void)?
     private var sessionId: String
 
     init() {
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForConnection = 30
+        config.timeoutIntervalForRequest = 30
         urlSession = URLSession(configuration: config)
         sessionId = UserDefaults.standard.string(forKey: "voiceSessionId") ?? UUID().uuidString
         if UserDefaults.standard.string(forKey: "voiceSessionId") == nil {
@@ -35,7 +36,14 @@ final class VoiceAPIClient: ObservableObject {
         }
     }
 
-    func setEventHandler(_ handler: @escaping (Event) -> Void) { eventHandler = handler }
+    func setEventHandler(_ handler: @escaping (Event) -> Void) {
+        eventHandler = handler
+    }
+
+    @MainActor
+    private func fireEvent(_ event: Event) {
+        eventHandler?(event)
+    }
 
     func connect(to url: URL) async {
         guard connectionState == .disconnected else { return }
@@ -43,21 +51,21 @@ final class VoiceAPIClient: ObservableObject {
         webSocketTask = urlSession.webSocketTask(with: url)
         webSocketTask?.resume()
         connectionState = .connected
-        eventHandler?(.ready)
-        receiveMessages()
+        await fireEvent(.ready)
+        Task { await receiveMessages() }
     }
 
     func disconnect() {
         webSocketTask?.cancel(with: .normalClosure, reason: nil)
         webSocketTask = nil
         connectionState = .disconnected
-        eventHandler?(.disconnected)
+        Task { @MainActor in await fireEvent(.disconnected) }
     }
 
     func sendAudio(_ data: Data) {
-        webSocketTask?.send(.data(data)) { error in
+        webSocketTask?.send(.data(data)) { [weak self] error in
             if let error = error {
-                self.eventHandler?(.error("Audio send failed: \(error.localizedDescription)"))
+                Task { @MainActor in self?.fireEvent(.error("Audio send failed: \(error.localizedDescription)")) }
             }
         }
     }
@@ -73,39 +81,44 @@ final class VoiceAPIClient: ObservableObject {
     private func sendControlMessage(_ message: [String: Any]) {
         guard let data = try? JSONSerialization.data(withJSONObject: message),
               let string = String(data: data, encoding: .utf8) else { return }
-        webSocketTask?.send(.string(string)) { error in
+        webSocketTask?.send(.string(string)) { [weak self] error in
             if let error = error {
-                self.eventHandler?(.error("Send failed: \(error.localizedDescription)"))
+                Task { @MainActor in self?.fireEvent(.error("Send failed: \(error.localizedDescription)")) }
             }
         }
     }
 
-    private func receiveMessages() {
-        webSocketTask?.receive { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let message):
-                self.handleMessage(message)
-                self.receiveMessages()
-            case .failure:
-                self.connectionState = .disconnected
-                self.eventHandler?(.disconnected)
+    private func receiveMessages() async {
+        guard let task = webSocketTask else { return }
+        do {
+            let message = try await task.receive()
+            handleMessage(message)
+            Task { await receiveMessages() }
+        } catch {
+            await MainActor.run { [weak self] in
+                self?.connectionState = .disconnected
+                Task { await self?.fireEvent(.disconnected) }
             }
         }
     }
 
     private func handleMessage(_ message: URLSessionWebSocketTask.Message) {
         switch message {
-        case .data(let data): eventHandler?(.audioChunk(data))
+        case .data(let data):
+            Task { @MainActor in fireEvent(.audioChunk(data)) }
         case .string(let text):
             guard let d = text.data(using: .utf8),
                   let json = try? JSONSerialization.jsonObject(with: d) as? [String: Any],
                   let type = json["type"] as? String else { return }
             switch type {
-            case "transcript": eventHandler?(.transcript(json["text"] as? String ?? ""))
-            case "thinking": eventHandler?(.thinking(json["thinking"] as? Bool ?? true))
-            case "audio_end": eventHandler?(.audioEnd)
-            case "error": eventHandler?(.error(json["message"] as? String ?? "Unknown error"))
+            case "transcript":
+                Task { @MainActor in fireEvent(.transcript(json["text"] as? String ?? "")) }
+            case "thinking":
+                Task { @MainActor in fireEvent(.thinking(json["thinking"] as? Bool ?? true)) }
+            case "audio_end":
+                Task { @MainActor in fireEvent(.audioEnd) }
+            case "error":
+                Task { @MainActor in fireEvent(.error(json["message"] as? String ?? "Unknown error")) }
             default: break
             }
         @unknown default: break

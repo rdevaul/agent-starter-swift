@@ -13,7 +13,7 @@ final class AudioEngineManager: ObservableObject {
 
     func setup() async throws {
         let session = AVAudioSession.sharedInstance()
-        try session.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowAirPlay])
+        try session.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetoothA2DP, .allowAirPlay])
         try session.setActive(true)
 
         let engine = AVAudioEngine()
@@ -30,7 +30,7 @@ final class AudioEngineManager: ObservableObject {
             let channelData = buffer.floatChannelData?[0]
             if let channelData = channelData {
                 var rms: Float = 0
-                vDSP_magnitude(channelData, vDSP.Stride(1), &rms, vDSP.Length(buffer.frameLength))
+                vDSP_rmsqv(channelData, 1, &rms, vDSP_Length(buffer.frameLength))
                 self.audioLevel = min(rms * 10.0, 1.0)
             }
             self.audioDataCallback?(buffer)
@@ -59,10 +59,15 @@ final class AudioEngineManager: ObservableObject {
         let floatCount = data.count / MemoryLayout<Float>.size
         guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(floatCount)) else { return }
         buffer.frameLength = buffer.frameCapacity
-        buffer.floatChannelData?[0].update(from: data, count: floatCount)
 
-        engine.connect(player, to: engine.mainMixerNode!, format: format)
-        player.scheduleBuffer(buffer)
+        // Copy raw bytes into the buffer's float channel data
+        data.withUnsafeBytes { rawPtr in
+            let floatPtr = rawPtr.bindMemory(to: Float.self)
+            buffer.floatChannelData?[0].update(from: floatPtr.baseAddress!, count: floatCount)
+        }
+
+        engine.connect(player, to: engine.mainMixerNode, format: format)
+        await player.scheduleBuffer(buffer)
         player.play()
 
         while player.isPlaying {

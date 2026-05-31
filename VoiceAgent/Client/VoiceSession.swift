@@ -64,7 +64,10 @@ final class VoiceSession: ObservableObject {
     func startRecording() {
         state = .recording
         audioEngine.setAudioDataCallback { [weak self] buffer in
-            self?.client.sendAudio(buffer.data)
+            guard let channelData = buffer.floatChannelData?[0] else { return }
+            let byteCount = Int(buffer.frameLength) * MemoryLayout<Float>.size
+            let data = Data(bytes: channelData, count: byteCount)
+            self?.client.sendAudio(data)
         }
         client.startRecording()
     }
